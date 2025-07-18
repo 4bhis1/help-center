@@ -1,0 +1,272 @@
+---
+const categories = [
+	{
+		title: "Getting Started",
+		description: "Learn the basics of using our platform",
+		icon: "🚀",
+		articles: 25,
+		color: "#36C5F0"
+	},
+	{
+		title: "Account & Billing",
+		description: "Manage your account and subscription",
+		icon: "💳",
+		articles: 18,
+		color: "#2EB67D"
+	},
+	{
+		title: "Teams & Workspaces",
+		description: "Collaborate with your team effectively",
+		icon: "👥",
+		articles: 32,
+		color: "#ECB22E"
+	},
+	{
+		title: "Integrations",
+		description: "Connect with your favorite tools",
+		icon: "🔗",
+		articles: 41,
+		color: "#E01E5A"
+	},
+	{
+		title: "Security & Privacy",
+		description: "Keep your data safe and secure",
+		icon: "🔒",
+		articles: 15,
+		color: "#4A154B"
+	},
+	{
+		title: "Mobile Apps",
+		description: "Use our platform on mobile devices",
+		icon: "📱",
+		articles: 22,
+		color: "#611f69"
+	},
+	{
+		title: "Troubleshooting",
+		description: "Solve common issues and problems",
+		icon: "🔧",
+		articles: 38,
+		color: "#FF6B35"
+	},
+	{
+		title: "API & Development",
+		description: "Build apps and integrations",
+		icon: "⚡",
+		articles: 29,
+		color: "#1a73e8"
+	}
+];
+---
+
+<section class="categories">
+	<div class="container">
+		<div class="categories-header">
+			<h2 class="section-title">Browse by Category</h2>
+			<p class="section-subtitle">Find answers quickly by exploring our organized help topics</p>
+			<div class="filter-tabs">
+				<button class="filter-tab active" data-filter="all">All Categories</button>
+				<button class="filter-tab" data-filter="getting-started">Getting Started</button>
+				<button class="filter-tab" data-filter="technical">Technical</button>
+				<button class="filter-tab" data-filter="account">Account</button>
+			</div>
+		</div>
+		<div class="categories-grid" id="categories-grid">
+			{categories.map((category) => (
+				<a href="#" class="category-card" data-color={category.color} data-category={category.title.toLowerCase().replace(/\s+/g, '-')}>
+					<div class="category-icon" style={`background: ${category.color}15; color: ${category.color};`}>
+						<span class="icon">{category.icon}</span>
+					</div>
+					<div class="category-content">
+						<h3 class="category-title">{category.title}</h3>
+						<p class="category-description">{category.description}</p>
+						<span class="category-count">{category.articles} articles</span>
+					</div>
+					<div class="category-arrow">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</div>
+				</a>
+			))}
+		</div>
+	</div>
+</section>
+
+<style>
+	.categories {
+		padding: 80px 0;
+		background: #fafafa;
+	}
+
+	.categories-header {
+		text-align: center;
+		margin-bottom: 64px;
+	}
+
+	.section-title {
+		font-size: 36px;
+		font-weight: 700;
+		color: #1a1a1a;
+		margin-bottom: 16px;
+	}
+
+	.section-subtitle {
+		font-size: 18px;
+		color: #6b7280;
+		max-width: 600px;
+		margin: 0 auto;
+	}
+
+	.filter-tabs {
+		display: flex;
+		justify-content: center;
+		gap: 8px;
+		margin-top: 32px;
+		flex-wrap: wrap;
+	}
+
+	.filter-tab {
+		background: transparent;
+		border: 2px solid #e5e7eb;
+		color: #6b7280;
+		padding: 8px 16px;
+		border-radius: 20px;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		font-size: 14px;
+	}
+
+	.filter-tab:hover {
+		border-color: #4A154B;
+		color: #4A154B;
+	}
+
+	.filter-tab.active {
+		background: #4A154B;
+		border-color: #4A154B;
+		color: white;
+	}
+
+	.categories-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 24px;
+	}
+
+	.category-card {
+		background: white;
+		border-radius: 16px;
+		padding: 32px 24px;
+		text-decoration: none;
+		color: inherit;
+		border: 1px solid #e5e7eb;
+		transition: all 0.3s ease;
+		position: relative;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.category-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 4px;
+		background: var(--card-color, #4A154B);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.3s ease;
+	}
+
+	.category-card:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+		border-color: transparent;
+	}
+
+	.category-card:hover::before {
+		transform: scaleX(1);
+	}
+
+	.category-card:hover .category-arrow {
+		transform: translateX(4px);
+	}
+
+	.category-icon {
+		width: 48px;
+		height: 48px;
+		border-radius: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 24px;
+		margin-bottom: 8px;
+	}
+
+	.category-content {
+		flex: 1;
+	}
+
+	.category-title {
+		font-size: 20px;
+		font-weight: 600;
+		color: #1a1a1a;
+		margin-bottom: 8px;
+	}
+
+	.category-description {
+		color: #6b7280;
+		line-height: 1.5;
+		margin-bottom: 12px;
+	}
+
+	.category-count {
+		font-size: 14px;
+		color: #9ca3af;
+		font-weight: 500;
+	}
+
+	.category-arrow {
+		color: #9ca3af;
+		transition: all 0.3s ease;
+		align-self: flex-end;
+	}
+
+	@media (max-width: 768px) {
+		.categories {
+			padding: 60px 0;
+		}
+
+		.categories-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.section-title {
+			font-size: 28px;
+		}
+
+		.category-card {
+			padding: 24px 20px;
+		}
+	}
+</style>
+
+<script>
+	// Add dynamic color variables
+	document.addEventListener('DOMContentLoaded', () => {
+		const cards = document.querySelectorAll('.category-card');
+		cards.forEach(card => {
+			const color = card.getAttribute('data-color');
+			if (color) {
+				card.style.setProperty('--card-color', color);
+			}
+		});
+	});
+</script>

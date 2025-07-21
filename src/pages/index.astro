@@ -4,217 +4,165 @@ import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import Categories from '../components/Categories.astro';
 import PopularArticles from '../components/PopularArticles.astro';
-import ContactSupport from '../components/ContactSupport.astro';
+import QuickActions from '../components/QuickActions.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="Help Center - Get the support you need">
+<Layout title="Support Center - Get help and find answers">
 	<Header />
 	<Hero />
 	<Categories />
 	<PopularArticles />
-	<ContactSupport />
+	<QuickActions />
 	<Footer />
 </Layout>
 
 <script>
-	// Add smooth scrolling for anchor links
-	document.addEventListener('DOMContentLoaded', () => {
-		// Search functionality with suggestions
-		const searchInput = document.getElementById('hero-search');
-		const searchSuggestions = document.getElementById('search-suggestions');
-		
-		const sampleSuggestions = [
-			'How to create a workspace',
-			'Setting up notifications',
-			'Troubleshooting login issues',
-			'Managing team permissions',
-			'Using keyboard shortcuts',
-			'Setting up integrations'
-		];
+	import { HELP_DATA, searchArticles } from '../data/constants';
 
+	document.addEventListener('DOMContentLoaded', () => {
+		// Search functionality
+		const searchInput = document.getElementById('hero-search') as HTMLInputElement;
+		const searchSuggestions = document.getElementById('search-suggestions') as HTMLElement;
+		
 		if (searchInput && searchSuggestions) {
+			let searchTimeout: NodeJS.Timeout;
+
 			searchInput.addEventListener('input', (e) => {
-				const query = e.target.value.toLowerCase();
-				if (query.length > 0) {
-					const filtered = sampleSuggestions.filter(suggestion => 
-						suggestion.toLowerCase().includes(query)
-					);
-					
-					if (filtered.length > 0) {
-						searchSuggestions.innerHTML = filtered.map(suggestion => 
-							`<div class="search-suggestion">${suggestion}</div>`
-						).join('');
-						searchSuggestions.style.display = 'block';
+				const query = (e.target as HTMLInputElement).value.toLowerCase();
+				
+				// Clear previous timeout
+				clearTimeout(searchTimeout);
+				
+				// Debounce search
+				searchTimeout = setTimeout(() => {
+					if (query.length > 0) {
+						// Filter suggestions based on query
+						const filtered = HELP_DATA.searchSuggestions.filter(suggestion => 
+							suggestion.toLowerCase().includes(query)
+						);
+						
+						// Also search articles
+						const articleResults = searchArticles(query);
+						const articleSuggestions = articleResults.slice(0, 3).map(article => article.title);
+						
+						const allSuggestions = [...filtered.slice(0, 3), ...articleSuggestions];
+						
+						if (allSuggestions.length > 0) {
+							searchSuggestions.innerHTML = allSuggestions.map(suggestion => 
+								`<div class="search-suggestion">${suggestion}</div>`
+							).join('');
+							searchSuggestions.style.display = 'block';
+						} else {
+							searchSuggestions.style.display = 'none';
+						}
 					} else {
 						searchSuggestions.style.display = 'none';
 					}
-				} else {
+				}, 300);
+			});
+
+			// Handle suggestion clicks
+			searchSuggestions.addEventListener('click', (e) => {
+				const target = e.target as HTMLElement;
+				if (target.classList.contains('search-suggestion')) {
+					searchInput.value = target.textContent || '';
 					searchSuggestions.style.display = 'none';
+					// Here you would typically trigger a search or navigation
+					console.log('Searching for:', target.textContent);
 				}
 			});
 
 			// Hide suggestions when clicking outside
 			document.addEventListener('click', (e) => {
-				if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
-					searchSuggestions.style.display = 'none';
-				}
-			});
-
-			// Handle suggestion clicks
-			searchSuggestions.addEventListener('click', (e) => {
-				if (e.target.classList.contains('search-suggestion')) {
-					searchInput.value = e.target.textContent;
+				const target = e.target as HTMLElement;
+				if (!searchInput.contains(target) && !searchSuggestions.contains(target)) {
 					searchSuggestions.style.display = 'none';
 				}
 			});
 		}
 
-		// Category filtering
-		const filterTabs = document.querySelectorAll('.filter-tab');
+		// Category card interactions
 		const categoryCards = document.querySelectorAll('.category-card');
-
-		filterTabs.forEach(tab => {
-			tab.addEventListener('click', () => {
-				// Update active tab
-				filterTabs.forEach(t => t.classList.remove('active'));
-				tab.classList.add('active');
-
-				const filter = tab.dataset.filter;
-				
-				categoryCards.forEach((card, index) => {
-					const category = card.dataset.category;
-					const shouldShow = filter === 'all' || 
-						(filter === 'getting-started' && category.includes('getting-started')) ||
-						(filter === 'technical' && (category.includes('troubleshooting') || category.includes('api'))) ||
-						(filter === 'account' && (category.includes('account') || category.includes('security')));
-
-					if (shouldShow) {
-						card.style.display = 'flex';
-						setTimeout(() => {
-							card.style.opacity = '1';
-							card.style.transform = 'translateY(0)';
-						}, index * 50);
-					} else {
-						card.style.opacity = '0';
-						card.style.transform = 'translateY(20px)';
-						setTimeout(() => {
-							card.style.display = 'none';
-						}, 300);
-					}
-				});
+		categoryCards.forEach(card => {
+			card.addEventListener('click', (e) => {
+				e.preventDefault();
+				const categoryId = card.getAttribute('data-category');
+				console.log('Category clicked:', categoryId);
+				// Here you would typically filter articles or navigate to category page
 			});
 		});
 
-		// Article sorting
-		const sortSelect = document.getElementById('sort-articles');
-		const articlesGrid = document.getElementById('articles-grid');
-		const loadMoreBtn = document.getElementById('load-more');
-
-		if (sortSelect && articlesGrid) {
-			sortSelect.addEventListener('change', () => {
-				const articles = Array.from(articlesGrid.children);
-				const sortBy = sortSelect.value;
-
-				articles.sort((a, b) => {
-					if (sortBy === 'popular') {
-						const viewsA = parseInt(a.dataset.views.replace(/[^\d]/g, ''));
-						const viewsB = parseInt(b.dataset.views.replace(/[^\d]/g, ''));
-						return viewsB - viewsA;
-					} else if (sortBy === 'recent') {
-						// Simulate recent sorting (in real app, would use actual dates)
-						return Math.random() - 0.5;
-					}
-					return 0;
-				});
-
-				// Animate the reordering
-				articles.forEach((article, index) => {
-					article.style.opacity = '0';
-					article.style.transform = 'translateY(20px)';
-					setTimeout(() => {
-						articlesGrid.appendChild(article);
-						article.style.opacity = '1';
-						article.style.transform = 'translateY(0)';
-					}, index * 100);
-				});
+		// Quick action interactions
+		const quickActionCards = document.querySelectorAll('.quick-action-card');
+		quickActionCards.forEach(card => {
+			card.addEventListener('click', () => {
+				const action = card.getAttribute('data-action');
+				console.log('Quick action clicked:', action);
+				
+				switch (action) {
+					case 'create-ticket':
+						// Open ticket creation modal or navigate to form
+						alert('Opening ticket creation form...');
+						break;
+					case 'track-ticket':
+						// Open ticket tracking interface
+						alert('Opening ticket tracking...');
+						break;
+					case 'call-support':
+						// Show contact information
+						alert('Call us at: +91-80-4040-2020');
+						break;
+				}
 			});
-		}
+		});
 
 		// Load more articles functionality
+		const loadMoreBtn = document.getElementById('load-more-articles');
 		if (loadMoreBtn) {
 			loadMoreBtn.addEventListener('click', () => {
-				// Simulate loading more articles
 				loadMoreBtn.textContent = 'Loading...';
-				loadMoreBtn.disabled = true;
-
+				loadMoreBtn.setAttribute('disabled', 'true');
+				
+				// Simulate API call
 				setTimeout(() => {
-					loadMoreBtn.textContent = 'Load More Articles';
-					loadMoreBtn.disabled = false;
-					// In a real app, you would fetch and append new articles here
+					console.log('Loading more articles...');
+					// Here you would typically fetch more articles from API
+					loadMoreBtn.textContent = 'Load more articles';
+					loadMoreBtn.removeAttribute('disabled');
 				}, 1500);
 			});
 		}
 
-		// Support modal functionality
-		const contactSupportBtn = document.getElementById('contact-support');
-		const supportModal = document.getElementById('support-modal');
-		const modalClose = document.getElementById('modal-close');
-
-		if (contactSupportBtn && supportModal && modalClose) {
-			contactSupportBtn.addEventListener('click', () => {
-				supportModal.style.display = 'flex';
-				document.body.style.overflow = 'hidden';
-			});
-
-			modalClose.addEventListener('click', () => {
-				supportModal.style.display = 'none';
-				document.body.style.overflow = 'auto';
-			});
-
-			supportModal.addEventListener('click', (e) => {
-				if (e.target === supportModal) {
-					supportModal.style.display = 'none';
-					document.body.style.overflow = 'auto';
-				}
-			});
-		}
-
-		// Form submission
-		const supportForm = document.querySelector('.support-form');
-		if (supportForm) {
-			supportForm.addEventListener('submit', (e) => {
+		// Article click tracking
+		const articleItems = document.querySelectorAll('.article-item');
+		articleItems.forEach(item => {
+			item.addEventListener('click', (e) => {
 				e.preventDefault();
-				const submitBtn = supportForm.querySelector('.submit-btn');
-				submitBtn.textContent = 'Sending...';
-				submitBtn.disabled = true;
-
-				setTimeout(() => {
-					alert('Message sent successfully!');
-					supportForm.reset();
-					supportModal.style.display = 'none';
-					document.body.style.overflow = 'auto';
-					submitBtn.textContent = 'Send Message';
-					submitBtn.disabled = false;
-				}, 2000);
+				const articleTitle = item.querySelector('.article-title')?.textContent;
+				console.log('Article clicked:', articleTitle);
+				// Here you would typically navigate to the article or track the click
 			});
-		}
+		});
 
-		// Smooth scrolling for anchor links
-		const links = document.querySelectorAll('a[href^="#"]');
-		links.forEach(link => {
+		// Smooth scroll for anchor links
+		const anchorLinks = document.querySelectorAll('a[href^="#"]');
+		anchorLinks.forEach(link => {
 			link.addEventListener('click', (e) => {
 				e.preventDefault();
-				const target = document.querySelector(link.getAttribute('href'));
-				if (target) {
-					target.scrollIntoView({
-						behavior: 'smooth'
+				const targetId = link.getAttribute('href')?.substring(1);
+				const targetElement = document.getElementById(targetId || '');
+				
+				if (targetElement) {
+					targetElement.scrollIntoView({
+						behavior: 'smooth',
+						block: 'start'
 					});
 				}
 			});
 		});
 
-		// Add scroll animations for elements coming into view
+		// Add scroll animations
 		const observerOptions = {
 			threshold: 0.1,
 			rootMargin: '0px 0px -50px 0px'
@@ -223,19 +171,46 @@ import Footer from '../components/Footer.astro';
 		const observer = new IntersectionObserver((entries) => {
 			entries.forEach(entry => {
 				if (entry.isIntersecting) {
-					entry.target.style.opacity = '1';
-					entry.target.style.transform = 'translateY(0)';
+					entry.target.classList.add('animate-in');
 				}
 			});
 		}, observerOptions);
 
-		// Observe elements for scroll animations
-		const animateElements = document.querySelectorAll('.category-card, .article-card, .stat');
+		// Observe elements for animations
+		const animateElements = document.querySelectorAll('.category-card, .article-item, .quick-action-card');
 		animateElements.forEach(el => {
-			el.style.opacity = '0';
-			el.style.transform = 'translateY(30px)';
-			el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
 			observer.observe(el);
 		});
 	});
 </script>
+
+<style>
+	/* Animation styles */
+	.category-card,
+	.article-item,
+	.quick-action-card {
+		opacity: 0;
+		transform: translateY(20px);
+		transition: opacity 0.6s ease, transform 0.6s ease;
+	}
+
+	.animate-in {
+		opacity: 1 !important;
+		transform: translateY(0) !important;
+	}
+
+	/* Add staggered animation delays */
+	.category-card:nth-child(1) { transition-delay: 0.1s; }
+	.category-card:nth-child(2) { transition-delay: 0.2s; }
+	.category-card:nth-child(3) { transition-delay: 0.3s; }
+	.category-card:nth-child(4) { transition-delay: 0.4s; }
+	.category-card:nth-child(5) { transition-delay: 0.5s; }
+	.category-card:nth-child(6) { transition-delay: 0.6s; }
+
+	.article-item:nth-child(1) { transition-delay: 0.1s; }
+	.article-item:nth-child(2) { transition-delay: 0.2s; }
+	.article-item:nth-child(3) { transition-delay: 0.3s; }
+	.article-item:nth-child(4) { transition-delay: 0.4s; }
+	.article-item:nth-child(5) { transition-delay: 0.5s; }
+	.article-item:nth-child(6) { transition-delay: 0.6s; }
+</style>

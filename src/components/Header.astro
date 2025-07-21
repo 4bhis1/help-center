@@ -5,19 +5,16 @@
 	<div class="container">
 		<nav class="nav">
 			<div class="nav-brand">
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M5.042 15.165a2.528 2.528 0 0 0 2.5 2.5c1.61 0 2.904-1.293 2.904-2.904 0-.275-.234-.535-.562-.535H5.542c-.328 0-.5.26-.5.939z" fill="#E01E5A"/>
-					<path d="M8.958 15.165a2.528 2.528 0 0 1-2.5 2.5c-1.61 0-2.904-1.293-2.904-2.904 0-.275.234-.535.562-.535h4.342c.328 0 .5.26.5.939z" fill="#36C5F0"/>
-					<path d="M8.958 8.835a2.528 2.528 0 0 0-2.5-2.5c-1.61 0-2.904 1.293-2.904 2.904 0 .275.234.535.562.535h4.342c.328 0 .5-.26.5-.939z" fill="#2EB67D"/>
-					<path d="M15.165 8.835a2.528 2.528 0 0 1 2.5-2.5c1.61 0 2.904 1.293 2.904 2.904 0 .275-.234.535-.562.535h-4.342c-.328 0-.5-.26-.5-.939z" fill="#ECB22E"/>
+				<svg width="120" height="24" viewBox="0 0 120 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<rect width="120" height="24" rx="4" fill="#387ed1"/>
+					<text x="60" y="16" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">Support</text>
 				</svg>
-				<span class="brand-text">Help Center</span>
 			</div>
 			<div class="nav-links">
-				<a href="#" class="nav-link">Articles</a>
-				<a href="#" class="nav-link">Contact Support</a>
-				<a href="#" class="nav-link">Community</a>
-				<button class="btn-primary">Sign In</button>
+				<a href="#" class="nav-link">Support</a>
+				<a href="#" class="nav-link">Trading Q&A</a>
+				<a href="#" class="nav-link">Create ticket</a>
+				<a href="#" class="nav-link">Track ticket</a>
 			</div>
 			<button class="mobile-menu-btn" id="mobile-menu-btn">
 				<span></span>
@@ -31,28 +28,22 @@
 <style>
 	.header {
 		background: #ffffff;
-		border-bottom: 1px solid #e5e7eb;
+		border-bottom: 1px solid #e6e6e6;
 		position: sticky;
 		top: 0;
 		z-index: 100;
-		backdrop-filter: blur(8px);
-		background-color: rgba(255, 255, 255, 0.95);
 	}
 
 	.nav {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 16px 0;
+		padding: 12px 0;
 	}
 
 	.nav-brand {
 		display: flex;
 		align-items: center;
-		gap: 12px;
-		font-weight: 700;
-		font-size: 18px;
-		color: #4A154B;
 	}
 
 	.nav-links {
@@ -63,35 +54,20 @@
 
 	.nav-link {
 		text-decoration: none;
-		color: #374151;
-		font-weight: 500;
+		color: #666;
+		font-size: 14px;
+		font-weight: 400;
 		transition: color 0.2s ease;
 	}
 
 	.nav-link:hover {
-		color: #4A154B;
-	}
-
-	.btn-primary {
-		background: #4A154B;
-		color: white;
-		border: none;
-		padding: 10px 20px;
-		border-radius: 8px;
-		font-weight: 600;
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-
-	.btn-primary:hover {
-		background: #611f69;
-		transform: translateY(-1px);
+		color: #387ed1;
 	}
 
 	.mobile-menu-btn {
 		display: none;
 		flex-direction: column;
-		gap: 4px;
+		gap: 3px;
 		background: none;
 		border: none;
 		cursor: pointer;
@@ -99,9 +75,9 @@
 	}
 
 	.mobile-menu-btn span {
-		width: 20px;
+		width: 18px;
 		height: 2px;
-		background: #374151;
+		background: #666;
 		border-radius: 1px;
 		transition: all 0.3s ease;
 	}
@@ -113,10 +89,6 @@
 
 		.mobile-menu-btn {
 			display: flex;
-		}
-
-		.brand-text {
-			display: none;
 		}
 	}
 </style>

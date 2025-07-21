@@ -2,66 +2,65 @@
 import { HELP_DATA } from '../data/constants';
 ---
 
-<section class="categories">
+<section class="quick-actions">
 	<div class="container">
-		<div class="categories-grid">
-			{HELP_DATA.categories.map((category) => (
-				<a href={`#${category.id}`} class="category-card" data-category={category.id}>
-					<div class="category-icon" style={`color: ${category.color};`}>
-						<span class="icon">{category.icon}</span>
+		<div class="quick-actions-grid">
+			{HELP_DATA.quickLinks.map((link) => (
+				<div class="quick-action-card" data-action={link.action}>
+					<div class="action-icon">
+						<span>{link.icon}</span>
 					</div>
-					<div class="category-content">
-						<h3 class="category-title">{category.title}</h3>
-						<p class="category-description">{category.description}</p>
-						<span class="category-count">{category.articleCount} articles</span>
+					<div class="action-content">
+						<h3 class="action-title">{link.title}</h3>
+						<p class="action-description">{link.description}</p>
 					</div>
-					<div class="category-arrow">
+					<div class="action-arrow">
 						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 						</svg>
 					</div>
-				</a>
+				</div>
 			))}
 		</div>
 	</div>
 </section>
 
 <style>
-	.categories {
+	.quick-actions {
 		padding: 48px 0;
 		background: white;
+		border-top: 1px solid #e6e6e6;
 	}
 
-	.categories-grid {
+	.quick-actions-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 		gap: 16px;
 	}
 
-	.category-card {
+	.quick-action-card {
 		background: white;
 		border: 1px solid #e6e6e6;
 		border-radius: 4px;
 		padding: 24px;
-		text-decoration: none;
-		color: inherit;
+		cursor: pointer;
 		transition: all 0.2s ease;
 		display: flex;
 		align-items: center;
 		gap: 16px;
-		position: relative;
 	}
 
-	.category-card:hover {
+	.quick-action-card:hover {
 		border-color: #387ed1;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	}
 
-	.category-card:hover .category-arrow {
+	.quick-action-card:hover .action-arrow {
 		transform: translateX(4px);
+		color: #387ed1;
 	}
 
-	.category-icon {
+	.action-icon {
 		width: 48px;
 		height: 48px;
 		border-radius: 50%;
@@ -73,47 +72,40 @@ import { HELP_DATA } from '../data/constants';
 		flex-shrink: 0;
 	}
 
-	.category-content {
+	.action-content {
 		flex: 1;
 	}
 
-	.category-title {
+	.action-title {
 		font-size: 16px;
 		font-weight: 500;
 		color: #333;
 		margin-bottom: 4px;
 	}
 
-	.category-description {
+	.action-description {
 		color: #666;
 		font-size: 14px;
 		line-height: 1.4;
-		margin-bottom: 8px;
+		margin: 0;
 	}
 
-	.category-count {
-		font-size: 12px;
-		color: #999;
-		font-weight: 400;
-	}
-
-	.category-arrow {
+	.action-arrow {
 		color: #ccc;
 		transition: all 0.2s ease;
 		flex-shrink: 0;
 	}
 
 	@media (max-width: 768px) {
-		.categories {
+		.quick-actions {
 			padding: 32px 0;
 		}
 
-		.categories-grid {
+		.quick-actions-grid {
 			grid-template-columns: 1fr;
-			gap: 12px;
 		}
 
-		.category-card {
+		.quick-action-card {
 			padding: 20px;
 		}
 	}

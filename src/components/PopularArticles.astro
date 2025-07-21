@@ -1,276 +1,158 @@
 ---
-const articles = [
-	{
-		title: "How to create your first workspace",
-		category: "Getting Started",
-		readTime: "3 min read",
-		views: "12.5k views"
-	},
-	{
-		title: "Setting up team permissions and roles",
-		category: "Teams & Workspaces",
-		readTime: "5 min read",
-		views: "8.2k views"
-	},
-	{
-		title: "Troubleshooting connection issues",
-		category: "Troubleshooting",
-		readTime: "4 min read",
-		views: "15.1k views"
-	},
-	{
-		title: "Managing your subscription and billing",
-		category: "Account & Billing",
-		readTime: "6 min read",
-		views: "6.8k views"
-	},
-	{
-		title: "Setting up two-factor authentication",
-		category: "Security & Privacy",
-		readTime: "4 min read",
-		views: "9.3k views"
-	},
-	{
-		title: "Using the mobile app effectively",
-		category: "Mobile Apps",
-		readTime: "5 min read",
-		views: "7.4k views"
-	}
-];
+import { HELP_DATA, formatViews } from '../data/constants';
 ---
 
 <section class="popular-articles">
 	<div class="container">
-		<div class="articles-header">
-			<h2 class="section-title">Popular Articles</h2>
-			<p class="section-subtitle">Most viewed help articles this month</p>
-			<div class="articles-controls">
-				<select class="sort-select" id="sort-articles">
-					<option value="popular">Most Popular</option>
-					<option value="recent">Most Recent</option>
-					<option value="helpful">Most Helpful</option>
-				</select>
-				<button class="load-more-btn" id="load-more">Load More Articles</button>
-			</div>
+		<div class="section-header">
+			<h2 class="section-title">Popular articles</h2>
 		</div>
-		<div class="articles-grid" id="articles-grid">
-			{articles.map((article, index) => (
-				<a href="#" class="article-card" data-views={article.views} data-category={article.category}>
-					<div class="article-header">
-						<span class="article-rank">#{String(index + 1).padStart(2, '0')}</span>
-						<span class="article-category">{article.category}</span>
+		<div class="articles-list" id="articles-list">
+			{HELP_DATA.popularArticles.map((article, index) => (
+				<a href={`#article-${article.id}`} class="article-item" data-category={article.category}>
+					<div class="article-content">
+						<h3 class="article-title">{article.title}</h3>
+						<div class="article-meta">
+							<span class="article-category">{article.category}</span>
+							<span class="article-views">{formatViews(article.views)} views</span>
+							<span class="article-read-time">{article.readTime} read</span>
+						</div>
 					</div>
-					<h3 class="article-title">{article.title}</h3>
-					<div class="article-meta">
-						<span class="read-time">{article.readTime}</span>
-						<span class="divider">•</span>
-						<span class="views">{article.views}</span>
+					<div class="article-arrow">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
 					</div>
 				</a>
 			))}
 		</div>
-		<div class="articles-footer">
-			<button class="btn-secondary">View All Articles</button>
+		<div class="load-more-container">
+			<button class="load-more-btn" id="load-more-articles">Load more articles</button>
 		</div>
 	</div>
 </section>
 
 <style>
 	.popular-articles {
-		padding: 80px 0;
-		background: white;
+		padding: 48px 0;
+		background: #f8f9fa;
+		border-top: 1px solid #e6e6e6;
 	}
 
-	.articles-header {
-		text-align: center;
-		margin-bottom: 64px;
+	.section-header {
+		margin-bottom: 32px;
 	}
 
 	.section-title {
-		font-size: 36px;
-		font-weight: 700;
-		color: #1a1a1a;
-		margin-bottom: 16px;
+		font-size: 20px;
+		font-weight: 500;
+		color: #333;
+		margin: 0;
 	}
 
-	.section-subtitle {
-		font-size: 18px;
-		color: #6b7280;
-	}
-
-	.articles-controls {
+	.articles-list {
 		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: 16px;
-		margin-top: 24px;
-		flex-wrap: wrap;
-	}
-
-	.sort-select {
-		background: white;
-		border: 2px solid #e5e7eb;
-		padding: 8px 16px;
-		border-radius: 8px;
-		font-weight: 500;
-		cursor: pointer;
-		transition: border-color 0.2s ease;
-	}
-
-	.sort-select:focus {
-		outline: none;
-		border-color: #4A154B;
-	}
-
-	.load-more-btn {
-		background: #f3f4f6;
-		color: #4A154B;
-		border: none;
-		padding: 8px 16px;
-		border-radius: 8px;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-
-	.load-more-btn:hover {
-		background: #e5e7eb;
-		transform: translateY(-1px);
-	}
-
-	.articles-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-		gap: 24px;
-		margin-bottom: 48px;
-	}
-
-	.article-card {
-		background: white;
-		border: 1px solid #e5e7eb;
-		border-radius: 12px;
-		padding: 24px;
-		text-decoration: none;
-		color: inherit;
-		transition: all 0.3s ease;
-		position: relative;
+		flex-direction: column;
+		gap: 1px;
+		background: #e6e6e6;
+		border-radius: 4px;
 		overflow: hidden;
 	}
 
-	.article-card::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: linear-gradient(135deg, #4A154B08 0%, #36C5F008 100%);
-		opacity: 0;
-		transition: opacity 0.3s ease;
-	}
-
-	.article-card:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-		border-color: #4A154B20;
-	}
-
-	.article-card:hover::before {
-		opacity: 1;
-	}
-
-	.article-header {
+	.article-item {
+		background: white;
+		padding: 20px 24px;
+		text-decoration: none;
+		color: inherit;
+		transition: all 0.2s ease;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-bottom: 16px;
-		position: relative;
-		z-index: 1;
+		gap: 16px;
 	}
 
-	.article-rank {
-		background: #4A154B;
-		color: white;
-		font-weight: 700;
-		font-size: 14px;
-		padding: 6px 10px;
-		border-radius: 6px;
-		min-width: 40px;
-		text-align: center;
+	.article-item:hover {
+		background: #f8f9fa;
 	}
 
-	.article-category {
-		background: #f3f4f6;
-		color: #6b7280;
-		font-size: 12px;
-		font-weight: 500;
-		padding: 4px 8px;
-		border-radius: 4px;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
+	.article-item:hover .article-arrow {
+		transform: translateX(4px);
+		color: #387ed1;
+	}
+
+	.article-content {
+		flex: 1;
 	}
 
 	.article-title {
-		font-size: 18px;
-		font-weight: 600;
-		color: #1a1a1a;
+		font-size: 16px;
+		font-weight: 400;
+		color: #333;
+		margin-bottom: 8px;
 		line-height: 1.4;
-		margin-bottom: 16px;
-		position: relative;
-		z-index: 1;
 	}
 
 	.article-meta {
 		display: flex;
 		align-items: center;
-		gap: 8px;
-		font-size: 14px;
-		color: #9ca3af;
-		position: relative;
-		z-index: 1;
+		gap: 16px;
+		font-size: 12px;
+		color: #666;
 	}
 
-	.divider {
-		opacity: 0.5;
+	.article-category {
+		background: #e6f3ff;
+		color: #387ed1;
+		padding: 2px 8px;
+		border-radius: 12px;
+		font-weight: 500;
 	}
 
-	.articles-footer {
+	.article-views,
+	.article-read-time {
+		color: #999;
+	}
+
+	.article-arrow {
+		color: #ccc;
+		transition: all 0.2s ease;
+		flex-shrink: 0;
+	}
+
+	.load-more-container {
 		text-align: center;
+		margin-top: 32px;
 	}
 
-	.btn-secondary {
-		background: transparent;
-		color: #4A154B;
-		border: 2px solid #4A154B;
-		padding: 12px 32px;
-		border-radius: 8px;
-		font-weight: 600;
+	.load-more-btn {
+		background: white;
+		border: 1px solid #ddd;
+		color: #666;
+		padding: 12px 24px;
+		border-radius: 4px;
+		font-size: 14px;
 		cursor: pointer;
 		transition: all 0.2s ease;
-		font-size: 16px;
 	}
 
-	.btn-secondary:hover {
-		background: #4A154B;
-		color: white;
-		transform: translateY(-1px);
+	.load-more-btn:hover {
+		border-color: #387ed1;
+		color: #387ed1;
 	}
 
 	@media (max-width: 768px) {
 		.popular-articles {
-			padding: 60px 0;
+			padding: 32px 0;
 		}
 
-		.articles-grid {
-			grid-template-columns: 1fr;
+		.article-item {
+			padding: 16px 20px;
 		}
 
-		.section-title {
-			font-size: 28px;
-		}
-
-		.article-card {
-			padding: 20px;
+		.article-meta {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 8px;
 		}
 	}
 </style>

@@ -172,7 +172,8 @@ export const API_ENDPOINTS = {
   articles: "/api/articles",
   popularArticles: "/api/articles/popular",
   createTicket: "/api/tickets/create",
-  trackTicket: "/api/tickets/track"
+  trackTicket: "/api/tickets/track",
+  faqs: "/api/faqs"
 };
 
 // Helper functions for data manipulation
@@ -199,3 +200,71 @@ export const formatViews = (views: number): string => {
   }
   return views.toString();
 };
+
+export const getFAQsByCategory = (categoryId: string) => {
+  if (categoryId === 'all') return FAQ_DATA;
+  return FAQ_DATA.filter(faq => faq.category === categoryId);
+};
+
+export const getPopularFAQs = () => {
+  return FAQ_DATA.filter(faq => faq.isPopular);
+};
+// FAQ Data
+export const FAQ_DATA = [
+  {
+    id: 1,
+    question: "How do I reset my password?",
+    answer: "You can reset your password by clicking on 'Forgot Password' on the login page and following the instructions sent to your email.",
+    category: "account",
+    isPopular: true
+  },
+  {
+    id: 2,
+    question: "What are the trading hours?",
+    answer: "Trading hours are Monday to Friday, 9:15 AM to 3:30 PM for equity markets. Currency and commodity markets have different timings.",
+    category: "trading",
+    isPopular: true
+  },
+  {
+    id: 3,
+    question: "How long does fund withdrawal take?",
+    answer: "Fund withdrawals are processed within 30 minutes during market hours and by next working day for requests after market hours.",
+    category: "funds",
+    isPopular: true
+  },
+  {
+    id: 4,
+    question: "What documents are required for account opening?",
+    answer: "You need PAN card, Aadhaar card, bank statement/cancelled cheque, and income proof documents for account opening.",
+    category: "account",
+    isPopular: false
+  },
+  {
+    id: 5,
+    question: "How do I place a stop-loss order?",
+    answer: "You can place a stop-loss order by selecting 'SL' or 'SL-M' as the order type and entering your trigger price.",
+    category: "trading",
+    isPopular: true
+  },
+  {
+    id: 6,
+    question: "What is the minimum amount to start trading?",
+    answer: "There's no minimum amount required to start trading. However, you need sufficient funds to buy at least one share of your chosen stock.",
+    category: "account",
+    isPopular: false
+  },
+  {
+    id: 7,
+    question: "How do I download my tax statements?",
+    answer: "You can download tax statements from Console under the 'Reports' section. P&L statements and tax reports are available there.",
+    category: "console",
+    isPopular: false
+  },
+  {
+    id: 8,
+    question: "What is the brokerage for delivery trades?",
+    answer: "Delivery trades (CNC) have zero brokerage. You only pay statutory charges like STT, exchange charges, and GST.",
+    category: "account",
+    isPopular: true
+  }
+];

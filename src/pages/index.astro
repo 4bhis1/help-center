@@ -5,20 +5,34 @@ import Hero from '../components/Hero.astro';
 import Categories from '../components/Categories.astro';
 import PopularArticles from '../components/PopularArticles.astro';
 import QuickActions from '../components/QuickActions.astro';
+import FAQSidebar from '../components/FAQSidebar.astro';
 import Footer from '../components/Footer.astro';
 ---
 
 <Layout title="Support Center - Get help and find answers">
 	<Header />
 	<Hero />
-	<Categories />
-	<PopularArticles />
+	
+	<div class="main-content">
+		<div class="container">
+			<div class="content-layout">
+				<div class="primary-content">
+					<Categories />
+					<PopularArticles />
+				</div>
+				<div class="sidebar-content">
+					<FAQSidebar />
+				</div>
+			</div>
+		</div>
+	</div>
+	
 	<QuickActions />
 	<Footer />
 </Layout>
 
 <script>
-	import { HELP_DATA, searchArticles, getArticlesByCategory } from '../data/constants';
+	import { HELP_DATA, searchArticles, getArticlesByCategory, FAQ_DATA, getFAQsByCategory, getPopularFAQs } from '../data/constants';
 
 	document.addEventListener('DOMContentLoaded', () => {
 		// Search functionality
@@ -259,10 +273,133 @@ import Footer from '../components/Footer.astro';
 				}
 			});
 		}
+
+		// FAQ Functionality
+		const faqTabs = document.querySelectorAll('.faq-tab');
+		const faqList = document.getElementById('faq-list');
+		const faqSearch = document.getElementById('faq-search') as HTMLInputElement;
+
+		// FAQ Tab switching
+		faqTabs.forEach(tab => {
+			tab.addEventListener('click', () => {
+				// Update active tab
+				faqTabs.forEach(t => t.classList.remove('active'));
+				tab.classList.add('active');
+
+				// Get filter type and update FAQs
+				const filter = tab.getAttribute('data-faq-filter') || 'popular';
+				const faqs = filter === 'popular' ? getPopularFAQs() : FAQ_DATA;
+				
+				updateFAQList(faqs);
+			});
+		});
+
+		// FAQ Search functionality
+		if (faqSearch) {
+			let faqSearchTimeout: NodeJS.Timeout;
+			
+			faqSearch.addEventListener('input', (e) => {
+				const query = (e.target as HTMLInputElement).value.toLowerCase();
+				
+				clearTimeout(faqSearchTimeout);
+				
+				faqSearchTimeout = setTimeout(() => {
+					const currentFilter = document.querySelector('.faq-tab.active')?.getAttribute('data-faq-filter') || 'popular';
+					const baseFaqs = currentFilter === 'popular' ? getPopularFAQs() : FAQ_DATA;
+					
+					const filteredFaqs = query.length > 0 
+						? baseFaqs.filter(faq => 
+							faq.question.toLowerCase().includes(query) || 
+							faq.answer.toLowerCase().includes(query)
+						)
+						: baseFaqs;
+					
+					updateFAQList(filteredFaqs);
+				}, 300);
+			});
+		}
+
+		// FAQ Toggle functionality
+		function setupFAQToggles() {
+			const faqToggles = document.querySelectorAll('[data-faq-toggle]');
+			faqToggles.forEach(toggle => {
+				toggle.addEventListener('click', () => {
+					const faqItem = toggle.closest('.faq-item');
+					if (faqItem) {
+						// Close other open FAQs
+						document.querySelectorAll('.faq-item.active').forEach(item => {
+							if (item !== faqItem) {
+								item.classList.remove('active');
+							}
+						});
+						
+						// Toggle current FAQ
+						faqItem.classList.toggle('active');
+					}
+				});
+			});
+		}
+
+		// Update FAQ list
+		function updateFAQList(faqs: typeof FAQ_DATA) {
+			if (faqList) {
+				faqList.innerHTML = faqs.map(faq => `
+					<div class="faq-item" data-faq-id="${faq.id}" data-faq-category="${faq.category}">
+						<button class="faq-question" data-faq-toggle>
+							<span class="faq-question-text">${faq.question}</span>
+							<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</button>
+						<div class="faq-answer">
+							<p>${faq.answer}</p>
+						</div>
+					</div>
+				`).join('');
+				
+				// Re-setup toggle functionality
+				setupFAQToggles();
+			}
+		}
+
+		// Initialize FAQ toggles
+		setupFAQToggles();
+
+		// FAQ Contact button
+		const faqContactBtn = document.getElementById('faq-contact');
+		if (faqContactBtn) {
+			faqContactBtn.addEventListener('click', () => {
+				// Trigger the main contact support modal
+				const contactSupportBtn = document.getElementById('contact-support');
+				if (contactSupportBtn) {
+					contactSupportBtn.click();
+				}
+			});
+		}
 	});
 </script>
 
 <style>
+	/* Main content layout */
+	.main-content {
+		background: white;
+	}
+
+	.content-layout {
+		display: grid;
+		grid-template-columns: 1fr 350px;
+		gap: 40px;
+		align-items: start;
+	}
+
+	.primary-content {
+		min-width: 0; /* Prevents grid overflow */
+	}
+
+	.sidebar-content {
+		min-width: 0; /* Prevents grid overflow */
+	}
+
 	/* Animation styles */
 	.category-card,
 	.article-item,
@@ -291,4 +428,18 @@ import Footer from '../components/Footer.astro';
 	.article-item:nth-child(4) { transition-delay: 0.4s; }
 	.article-item:nth-child(5) { transition-delay: 0.5s; }
 	.article-item:nth-child(6) { transition-delay: 0.6s; }
+
+	/* Responsive layout adjustments */
+	@media (max-width: 1024px) {
+		.content-layout {
+			grid-template-columns: 1fr;
+			gap: 32px;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.content-layout {
+			gap: 24px;
+		}
+	}
 </style>

@@ -6,10 +6,16 @@ import { HELP_DATA, formatViews } from '../data/constants';
 	<div class="container">
 		<div class="section-header">
 			<h2 class="section-title">Popular articles</h2>
+			<div class="filter-tabs">
+				<button class="filter-tab active" data-category="all">All</button>
+				<button class="filter-tab" data-category="account">Account</button>
+				<button class="filter-tab" data-category="trading">Trading</button>
+				<button class="filter-tab" data-category="funds">Funds</button>
+			</div>
 		</div>
 		<div class="articles-list" id="articles-list">
 			{HELP_DATA.popularArticles.map((article, index) => (
-				<a href={`#article-${article.id}`} class="article-item" data-category={article.category}>
+				<a href={`#article-${article.id}`} class="article-item" data-category={article.categoryId}>
 					<div class="article-content">
 						<h3 class="article-title">{article.title}</h3>
 						<div class="article-meta">
@@ -41,6 +47,11 @@ import { HELP_DATA, formatViews } from '../data/constants';
 
 	.section-header {
 		margin-bottom: 32px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 16px;
 	}
 
 	.section-title {
@@ -50,6 +61,32 @@ import { HELP_DATA, formatViews } from '../data/constants';
 		margin: 0;
 	}
 
+	.filter-tabs {
+		display: flex;
+		gap: 8px;
+		background: white;
+		border-radius: 6px;
+		padding: 4px;
+		border: 1px solid #e6e6e6;
+	}
+
+	.filter-tab {
+		background: none;
+		border: none;
+		padding: 8px 16px;
+		border-radius: 4px;
+		font-size: 14px;
+		color: #666;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.filter-tab.active,
+	.filter-tab:hover {
+		background: #387ed1;
+		color: white;
+	}
+
 	.articles-list {
 		display: flex;
 		flex-direction: column;
@@ -57,6 +94,12 @@ import { HELP_DATA, formatViews } from '../data/constants';
 		background: #e6e6e6;
 		border-radius: 4px;
 		overflow: hidden;
+		transition: all 0.3s ease;
+	}
+
+	.articles-list.filtering {
+		opacity: 0.7;
+		transform: translateY(10px);
 	}
 
 	.article-item {
@@ -69,6 +112,28 @@ import { HELP_DATA, formatViews } from '../data/constants';
 		align-items: center;
 		justify-content: space-between;
 		gap: 16px;
+		opacity: 1;
+		transform: translateY(0);
+		transition: all 0.3s ease;
+	}
+
+	.article-item.hidden {
+		display: none;
+	}
+
+	.article-item.fade-in {
+		animation: fadeInUp 0.4s ease forwards;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	.article-item:hover {
@@ -153,6 +218,16 @@ import { HELP_DATA, formatViews } from '../data/constants';
 			flex-direction: column;
 			align-items: flex-start;
 			gap: 8px;
+		}
+
+		.section-header {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.filter-tabs {
+			width: 100%;
+			justify-content: center;
 		}
 	}
 </style>

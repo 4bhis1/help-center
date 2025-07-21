@@ -18,7 +18,7 @@ import Footer from '../components/Footer.astro';
 </Layout>
 
 <script>
-	import { HELP_DATA, searchArticles } from '../data/constants';
+	import { HELP_DATA, searchArticles, getArticlesByCategory } from '../data/constants';
 
 	document.addEventListener('DOMContentLoaded', () => {
 		// Search functionality
@@ -82,14 +82,64 @@ import Footer from '../components/Footer.astro';
 			});
 		}
 
+		// Category filtering functionality
+		const filterTabs = document.querySelectorAll('.filter-tab');
+		const articlesList = document.getElementById('articles-list');
+		
+		filterTabs.forEach(tab => {
+			tab.addEventListener('click', () => {
+				// Update active tab
+				filterTabs.forEach(t => t.classList.remove('active'));
+				tab.classList.add('active');
+				
+				// Get category and filter articles
+				const category = tab.getAttribute('data-category') || 'all';
+				const filteredArticles = getArticlesByCategory(category);
+				
+				// Add filtering animation
+				if (articlesList) {
+					articlesList.classList.add('filtering');
+					
+					setTimeout(() => {
+						// Hide all articles first
+						const allArticles = articlesList.querySelectorAll('.article-item');
+						allArticles.forEach(article => {
+							article.classList.add('hidden');
+						});
+						
+						// Show filtered articles
+						filteredArticles.forEach((article, index) => {
+							const articleElement = articlesList.querySelector(`[href="#article-${article.id}"]`);
+							if (articleElement) {
+								articleElement.classList.remove('hidden');
+								articleElement.classList.add('fade-in');
+								articleElement.style.animationDelay = `${index * 0.1}s`;
+							}
+						});
+						
+						articlesList.classList.remove('filtering');
+					}, 150);
+				}
+			});
+		});
+
 		// Category card interactions
 		const categoryCards = document.querySelectorAll('.category-card');
 		categoryCards.forEach(card => {
 			card.addEventListener('click', (e) => {
 				e.preventDefault();
 				const categoryId = card.getAttribute('data-category');
-				console.log('Category clicked:', categoryId);
-				// Here you would typically filter articles or navigate to category page
+				
+				// Find and click the corresponding filter tab
+				const targetTab = document.querySelector(`[data-category="${categoryId}"]`);
+				if (targetTab) {
+					targetTab.click();
+					// Scroll to articles section
+					document.querySelector('.popular-articles')?.scrollIntoView({
+						behavior: 'smooth',
+						block: 'start'
+					});
+				}
 			});
 		});
 
@@ -165,13 +215,14 @@ import Footer from '../components/Footer.astro';
 		// Add scroll animations
 		const observerOptions = {
 			threshold: 0.1,
-			rootMargin: '0px 0px -50px 0px'
+			rootMargin: '0px 0px -100px 0px'
 		};
 
 		const observer = new IntersectionObserver((entries) => {
 			entries.forEach(entry => {
 				if (entry.isIntersecting) {
 					entry.target.classList.add('animate-in');
+					observer.unobserve(entry.target);
 				}
 			});
 		}, observerOptions);
@@ -181,6 +232,33 @@ import Footer from '../components/Footer.astro';
 		animateElements.forEach(el => {
 			observer.observe(el);
 		});
+
+		// Enhanced search with real-time filtering
+		if (searchInput) {
+			searchInput.addEventListener('keyup', (e) => {
+				if (e.key === 'Enter') {
+					const query = searchInput.value.trim();
+					if (query) {
+						const results = searchArticles(query);
+						console.log('Search results:', results);
+						
+						// Here you would typically update the UI with search results
+						// For now, we'll filter the visible articles
+						if (articlesList) {
+							const allArticles = articlesList.querySelectorAll('.article-item');
+							allArticles.forEach(article => {
+								const title = article.querySelector('.article-title')?.textContent?.toLowerCase() || '';
+								if (title.includes(query.toLowerCase())) {
+									article.style.display = 'flex';
+								} else {
+									article.style.display = 'none';
+								}
+							});
+						}
+					}
+				}
+			});
+		}
 	});
 </script>
 

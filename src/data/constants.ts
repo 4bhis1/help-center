@@ -1,9 +1,9 @@
-// Help Center Data Constants
+// Zerodha Support Center Data Constants
 export const HELP_DATA = {
   hero: {
-    title: "How can we help you?",
-    subtitle: "Search our knowledge base for quick answers",
-    searchPlaceholder: "Search for help articles, guides, and FAQs..."
+    title: "Support Portal",
+    subtitle: "Search for answers or browse around for help",
+    searchPlaceholder: "What can we help you with?"
   },
   
   categories: [
@@ -64,7 +64,8 @@ export const HELP_DATA = {
       category: "Trading and Markets",
       views: 125000,
       readTime: "3 min",
-      tags: ["orders", "rejection", "trading"]
+      tags: ["orders", "rejection", "trading"],
+      categoryId: "trading"
     },
     {
       id: 2,
@@ -72,7 +73,8 @@ export const HELP_DATA = {
       category: "Funds",
       views: 98000,
       readTime: "2 min",
-      tags: ["funds", "deposit", "payment"]
+      tags: ["funds", "deposit", "payment"],
+      categoryId: "funds"
     },
     {
       id: 3,
@@ -80,7 +82,8 @@ export const HELP_DATA = {
       category: "Trading and Markets",
       views: 87000,
       readTime: "4 min",
-      tags: ["product-types", "cnc", "mis", "nrml"]
+      tags: ["product-types", "cnc", "mis", "nrml"],
+      categoryId: "trading"
     },
     {
       id: 4,
@@ -88,7 +91,8 @@ export const HELP_DATA = {
       category: "Console",
       views: 76000,
       readTime: "3 min",
-      tags: ["statements", "contract-notes", "download"]
+      tags: ["statements", "contract-notes", "download"],
+      categoryId: "console"
     },
     {
       id: 5,
@@ -96,7 +100,8 @@ export const HELP_DATA = {
       category: "Funds",
       views: 65000,
       readTime: "3 min",
-      tags: ["withdrawal", "funds", "processing"]
+      tags: ["withdrawal", "funds", "processing"],
+      categoryId: "funds"
     },
     {
       id: 6,
@@ -104,7 +109,26 @@ export const HELP_DATA = {
       category: "Coin",
       views: 54000,
       readTime: "5 min",
-      tags: ["sip", "mutual-funds", "investment"]
+      tags: ["sip", "mutual-funds", "investment"],
+      categoryId: "coin"
+    },
+    {
+      id: 7,
+      title: "How to open a Zerodha account?",
+      category: "Account",
+      views: 89000,
+      readTime: "4 min",
+      tags: ["account-opening", "kyc", "documents"],
+      categoryId: "account"
+    },
+    {
+      id: 8,
+      title: "What are the brokerage charges?",
+      category: "Account",
+      views: 67000,
+      readTime: "2 min",
+      tags: ["brokerage", "charges", "pricing"],
+      categoryId: "account"
     }
   ],
 
@@ -153,8 +177,9 @@ export const API_ENDPOINTS = {
 
 // Helper functions for data manipulation
 export const getArticlesByCategory = (categoryId: string) => {
+  if (categoryId === 'all') return HELP_DATA.popularArticles;
   return HELP_DATA.popularArticles.filter(article => 
-    article.category.toLowerCase().replace(/\s+/g, '-') === categoryId
+    article.categoryId === categoryId
   );
 };
 
